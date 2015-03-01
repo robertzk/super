@@ -2,6 +2,7 @@
 #'
 #' @param ... The arguments passed to the parent function.
 #' @return the result of calling the next available function.
+#' @export
 #' @examples
 #' function1 <- function() {
 #'   print("Top-level")
