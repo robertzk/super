@@ -37,13 +37,15 @@ super <- function(...) {
   # TODO: (RK) Error on anonymous function calls.
   fn <- as.character(sys.call(-1)[[1]])
 
-  env <- parent.env(parent.frame(2))
+  env <- parent.frame(2)
 
+  first <- TRUE
   while (!identical(env, emptyenv())) {
     if (exists(fn, envir = env, inherits = FALSE)) {
       super_fn <- get(fn, envir = env, inherits = FALSE)
       if (is.function(super_fn)) {
-        return(do.call(fn, eval(substitute(alist(...))), envir = env))
+        if (first) { first <- FALSE }
+        else { return(do.call(fn, eval(substitute(alist(...))), envir = env)) }
       }
     }
     env <- parent.env(env)
