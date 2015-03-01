@@ -45,8 +45,8 @@ By using `super`, `base::source` will be selected if no other package has overwr
 `source` -- otherwise, the `source` exported by the nearest package in the search
 path will be selected.
 
-**Note**: Obviously, the function that `super` selects needs to be commutative with the
-current function. If the attach order in the search path matters, there is no good 
+**Note**: Obviously, the function that `super` selects needs to be [commutative](http://en.wikipedia.org/wiki/Commutative_property) 
+with the current function. If the attach order in the search path matters, there is no good 
 solution as packages in general do not have control over their attachment order. In the
 above example, this is already somewhat apparent: if the function which caches the `source`
 call is called first, then "sourcing file" will only be printed once. On the other hand,
