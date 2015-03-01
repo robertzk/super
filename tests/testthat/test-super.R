@@ -31,3 +31,4 @@ test_that("it calls the parent method in a single example chain", {
   expect_equal(calls, 3L:1L)
 })
 
+

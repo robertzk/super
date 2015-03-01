@@ -1,4 +1,4 @@
-R Parent Method calls [![Build Status](https://travis-ci.org/robertzk/r-package-template.svg?branch=master)](https://travis-ci.org/robertzk/r-package-template.svg?branch=master) [![Coverage Status](https://coveralls.io/repos/robertzk/r-package-template/badge.svg?branch=master)](https://coveralls.io/r/robertzk/r-package-template)
+R Parent Method calls [![Build Status](https://travis-ci.org/robertzk/super.svg?branch=master)](https://travis-ci.org/robertzk/super.svg?branch=master) [![Coverage Status](https://coveralls.io/repos/robertzk/super/badge.svg?branch=master)](https://coveralls.io/r/robertzk/super)
 ===========
 
 If two packages are loaded which contain namespace collisions (i.e., export a function
