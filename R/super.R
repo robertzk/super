@@ -2,6 +2,7 @@
 #'
 #' @param ... The arguments passed to the parent function.
 #' @return the result of calling the next available function.
+#' @export
 #' @examples
 #' function1 <- function() {
 #'   print("Top-level")
@@ -33,6 +34,7 @@
 #' # [1] "Mid-level"
 #' # [1] "Top-level"
 super <- function(...) {
+  # TODO: (RK) Error on anonymous function calls.
   fn <- as.character(sys.call(-1)[[1]])
 
   env <- parent.env(parent.frame(2))
