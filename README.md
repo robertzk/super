@@ -64,3 +64,41 @@ if (!require("devtools")) install.packages("devtools")
 devtools::install_github("robertzk/super")
 ```
 
+Another example
+===============
+
+Note that `super` merely looks up the parent environment chain of the calling frame.
+Thus, we can use it for local functions as well as attached packages.
+
+```R
+function1 <- function() {
+  print("Top-level")
+  invisible(NULL)
+}
+
+local({
+  function2 <- function() {
+    function1 <- function() {
+      print("Mid-level")
+      super::super()
+    }
+
+    function3 <- function() {
+      function1 <- function() {
+        print("Low-level")
+        super::super()
+      }
+      function1()
+    }
+
+    function3()
+  }
+
+  function2()
+})
+# Will print
+# [1] "Low-level"
+# [1] "Mid-level"
+# [1] "Top-level"
+```
+
