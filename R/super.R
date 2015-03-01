@@ -33,6 +33,7 @@
 #' # [1] "Mid-level"
 #' # [1] "Top-level"
 super <- function(...) {
+  # TODO: (RK) Error on anonymous function calls.
   fn <- as.character(sys.call(-1)[[1]])
 
   env <- parent.env(parent.frame(2))
