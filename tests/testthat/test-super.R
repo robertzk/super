@@ -54,4 +54,24 @@ test_that("it can call with different super arguments", {
   expect_equal(calls, c(1L, 2L))
 })
 
+test_that("it can call without executing twice from a non-base call", {
+  calls <- integer(0)
+  function1 <- function(x) {
+    calls <<- c(calls, x)
+  }
+
+  function2 <- function() {
+    function1 <- function(y) {
+      calls <<- c(calls, y)
+      super(2)
+    }
+    local({
+      function1(1)
+    })
+  }
+  function2()
+
+  expect_equal(calls, c(1L, 2L))
+})
+
 
