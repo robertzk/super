@@ -20,7 +20,7 @@ second package were attached with the following overwrite.
 
 ```r
 source <- function(file, ...) {
-  if (file %in% otherpackage::has_cached(file, ...)) { otherpackage::cache(file, ...) }
+  if (otherpackage::has_cached(file, ...)) { otherpackage::cache(file, ...) }
   else { base::source(file, ...) }
 }
 ```
