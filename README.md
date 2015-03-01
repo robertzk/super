@@ -32,7 +32,7 @@ To accomplish this, we can instead use `super`:
 
 ```r
 source <- function(file, ...) {
-  if (file %in% otherpackage::has_cached(file, ...)) { otherpackage::cache(file, ...) }
+  if (otherpackage::has_cached(file, ...)) { otherpackage::cache(file, ...) }
   else { super::super(file, ...) }
 }
 ```
