@@ -50,7 +50,7 @@ with the current function. If the attach order in the search path matters, there
 solution as packages in general do not have control over their attachment order. In the
 above example, this is already somewhat apparent: if the function which caches the `source`
 call is called first, then "sourcing file" will only be printed once. On the other hand,
-if the first package is attached closer to global environment, then "sourcing file" will
+if the first package is attached closer to the global environment, then "sourcing file" will
 be printed even on cache hits.
 
 Installation
