@@ -3,7 +3,11 @@ R Parent Method calls [![Build Status](https://travis-ci.org/robertzk/super.svg?
 
 If two packages are loaded which contain namespace collisions (i.e., export a function
 with the same name), R has no good strategy for providing the ability to call the
-overwritten function. For example, consider the following scenario.
+overwritten function. This package aims to solve that problem by defining a `super`
+method which tries to find the next appropriate function to call. You should be
+familiar with [how R looks for functions](http://blog.obeautifulcode.com/R/How-R-Searches-And-Finds-Stuff/).
+
+For example, consider the following scenario.
 
 ```r
 # Exported in some attached package.
@@ -40,6 +44,14 @@ source <- function(file, ...) {
 By using `super`, `base::source` will be selected if no other package has overwritten
 `source` -- otherwise, the `source` exported by the nearest package in the search
 path will be selected.
+
+**Note**: Obviously, the function that `super` selects needs to be commutative with the
+current function. If the attach order in the search path matters, there is no good 
+solution as packages in general do not have control over their attachment order. In the
+above example, this is already somewhat apparent: if the function which caches the `source`
+call is called first, then "sourcing file" will only be printed once. On the other hand,
+if the first package is attached closer to global environment, then "sourcing file" will
+be printed even on cache hits.
 
 Installation
 ============
