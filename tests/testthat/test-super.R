@@ -31,4 +31,9 @@ test_that("it calls the parent method in a single example chain", {
   expect_equal(calls, 3L:1L)
 })
 
+test_that("it errors when no super method exists", {
+  not_a_function <- function() { super() }
+  expect_error(not_a_function(), "No parent function")
+})
+
 
