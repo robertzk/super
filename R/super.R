@@ -133,6 +133,10 @@ hop <- function(env) {
   }
 }
 
+#' Hop over parent environments.
+#'
+#' @param env environment
+#' @param times integer
 #' @export
 multi_parent_env <- function(env, times) {
   while (times > 0) {
