@@ -44,9 +44,11 @@ super <- function(...) {
       # From the magic get() call below, we extract the function name.
       fn <- fn[2] 
       env <- parent.frame()
+      level <- 2 # See comment below.
     }
   } else {
-    env <- parent.frame(2)
+    env   <- parent.frame(2)
+    level <- 7
   }
 
   first <- TRUE
@@ -62,14 +64,14 @@ super <- function(...) {
           # n-fold parent environment of the calling environment, parent.frame(),
           # where n = parent_count. Otherwise, non-standard evaluation will not work
           # correctly with super.
-          browser(expr = !is.null(attr(env, "name")))
           return(eval.parent(substitute(
-            # The magic number 5 comes from the fact eval.parent(...) creates its own
-            # call chain with 4 steps inserted that we wish to skip over.
+            # The magic number level = 7 comes from the fact eval.parent(...) creates its own
+            # call chain with 5 steps inserted that we wish to skip over. Otherwise,
+            # if we are already in a super calling chain, we use level = 2.
             {
               `*call*`      <- sys.call(-4)
               `*call*`[[1]] <- quote(
-                get(fn, envir = super::multi_parent_env(parent.frame(7), parent_count)) # parent.frame(), parent_count))
+                get(fn, envir = super::multi_parent_env(parent.frame(level), parent_count)) # parent.frame(), parent_count))
               )
               eval(`*call*`)
             }

@@ -31,15 +31,18 @@ test_that("it should call the parent method twice removed", {
 test_that("it should call the parent method twice removed with another super call", {
   calls <- integer(0)
   local({
+    level1 <- TRUE
     function1 <- function() {
       calls <<- c(calls, 1L)
     }
     local({
+      level2 <- TRUE
       function1 <- function() {
         calls <<- c(calls, 2L)
         super::super()
       }
       local({
+        level3 <- TRUE
         function1 <- function() {
           calls <<- c(calls, 3L)
           super::super()
