@@ -74,4 +74,25 @@ test_that("it can call without executing twice from a non-base call", {
   expect_equal(calls, c(1L, 2L))
 })
 
+test_that("it can execute a simple local call", {
+  expect_output({
+    out <- function(x) print(x)
+    local({
+      out <- function(x) { super::super(x) }
+      out("hi")
+    })
+  }, "hi")
+})
+
+test_that("it passes on non-standard evaluation", {
+  expect_output({
+    out <- function(x) deparse(substitute(x))
+    local({
+      out <- function(x) { super::super(x) }
+      out(hi)
+    })
+  }, "hi")
+})
+
+
 
