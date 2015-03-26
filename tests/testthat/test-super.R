@@ -1,4 +1,4 @@
-context("super") 
+context("super")
 
 test_that("it should call the parent method once", {
   calls <- integer(0)
@@ -171,7 +171,7 @@ test_that("it passes on non-standard evaluation and scope with tweaks", {
 })
 
 test_that("it is smart about translating NSE through name changes", {
-  # TODO: (RK) Is this really the correct behavior? 
+  # TODO: (RK) Is this really the correct behavior?
   # options(super.debug=T);on.exit(options(super.debug=F))
   expect_equal({
     out <- function(x) list(x, deparse(substitute(x)))
@@ -207,3 +207,7 @@ test_that("it is smart about translating NSE through named name swaps", {
   }, list(1, 2, "val", "val2"))
 })
 
+test_that("it cannot call `get` directly", {
+  somefunc <- function() "hello!"
+  expect_error(super::super(get("hello", envir = parent.frame(), inherits = FALSE)))
+})
