@@ -1,5 +1,56 @@
 context("super") 
 
+test_that("it should call the parent method once", {
+  calls <- integer(0)
+  function1 <- function() { calls <<- c(calls, 1L) }
+  local({
+    function1 <- function() {
+      calls <<- c(calls, 2L)
+      super::super()
+    }
+    function1()
+  })
+  expect_equal(calls, c(2L, 1L))
+})
+
+test_that("it should call the parent method twice removed", {
+  calls <- integer(0)
+  function1 <- function() { calls <<- c(calls, 1L) }
+  local({
+    local({
+      function1 <- function() {
+        calls <<- c(calls, 2L)
+        super::super()
+      }
+      function1()
+    })
+  })
+  expect_equal(calls, c(2L, 1L))
+})
+
+test_that("it should call the parent method twice removed with another super call", {
+  calls <- integer(0)
+  local({
+    function1 <- function() {
+      calls <<- c(calls, 1L)
+    }
+    local({
+      function1 <- function() {
+        calls <<- c(calls, 2L)
+        super::super()
+      }
+      local({
+        function1 <- function() {
+          calls <<- c(calls, 3L)
+          super::super()
+        }
+        function1()
+      })
+    })
+  })
+  expect_equal(calls, c(3L, 2L, 1L))
+})
+
 test_that("it calls the parent method in a single example chain", {
   calls <- integer(0)
   function1 <- function() {

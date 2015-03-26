@@ -37,7 +37,7 @@ super <- function(...) {
   # TODO: (RK) Error on anonymous function calls.
   fn <- as.character(sys.call(-1)[[1]])
   if (identical(fn[1], "get")) {
-    if (length(fn) == 1) {
+    if (length(fn) == 1) { # TODO: (RK) Actually parse out super::multi_parent_env
       stop("super::super does not support ", sQuote("get"), " calls ",
            "due to internal purposes.")
     } else {
@@ -62,6 +62,7 @@ super <- function(...) {
           # n-fold parent environment of the calling environment, parent.frame(),
           # where n = parent_count. Otherwise, non-standard evaluation will not work
           # correctly with super.
+          browser(expr = !is.null(attr(env, "name")))
           return(eval.parent(substitute(
             # The magic number 5 comes from the fact eval.parent(...) creates its own
             # call chain with 4 steps inserted that we wish to skip over.
