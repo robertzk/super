@@ -91,9 +91,6 @@ test_that("it errors when no super method exists", {
 })
 
 test_that("it can call with different super arguments", {
-  # TODO: (RK) Allow different super arguments.
-  # https://github.com/robertzk/super/issues/7 
-  skip("Skipping")
   calls <- integer(0)
   function1 <- function(x) {
     calls <<- c(calls, x)
@@ -112,9 +109,6 @@ test_that("it can call with different super arguments", {
 })
 
 test_that("it can call without executing twice from a non-base call", {
-  # TODO: (RK) Allow different super arguments.
-  # https://github.com/robertzk/super/issues/7 
-  skip("Skipping")
   calls <- integer(0)
   function1 <- function(x) {
     calls <<- c(calls, x)
@@ -152,6 +146,17 @@ test_that("it passes on non-standard evaluation", {
       out(hi)
     })
   }, "hi")
+})
+
+test_that("it passes on non-standard evaluation and scope", {
+  expect_equal({
+    out <- function(x) list(x, deparse(substitute(x)))
+    local({
+      out <- function(x) { super::super(x) }
+      val <- 1
+      out(val)
+    })
+  }, list(1, "val"))
 })
 
 

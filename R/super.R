@@ -52,9 +52,11 @@ super <- function(...) {
   }
 
   first <- TRUE
-  parent_count <- -1
+  first_count <- parent_count <- -1
   while (!identical(env, emptyenv())) {
     parent_count <- parent_count + 1
+    if (first) first_count <- first_count + 1
+
     if (exists(fn, envir = env, inherits = FALSE)) {
       super_fn <- get(fn, envir = env, inherits = FALSE)
       if (is.function(super_fn)) {
@@ -64,16 +66,42 @@ super <- function(...) {
           # n-fold parent environment of the calling environment, parent.frame(),
           # where n = parent_count. Otherwise, non-standard evaluation will not work
           # correctly with super.
+          browser(expr = getOption("br", FALSE))
           return(eval.parent(substitute(
             # The magic number level = 7 comes from the fact eval.parent(...) creates its own
             # call chain with 5 steps inserted that we wish to skip over. Otherwise,
             # if we are already in a super calling chain, we use level = 2.
             {
-              `*call*`      <- sys.call(-4)
-              `*call*`[[1]] <- quote(
-                get(fn, envir = super::multi_parent_env(parent.frame(level), parent_count)) # parent.frame(), parent_count))
+              `*call*`       <- sys.call(-3) # This is the super::super call
+              `*fn*`         <- quote(
+                get(fn, envir = super::multi_parent_env(parent.frame(level), parent_count)) 
               )
-              eval(`*call*`)
+              `*call*`[[1]]  <- `*fn*`
+
+              `*ucall*`      <- sys.call(-4) # This is the foo() call whose body has a super::super call
+              `*ufn*`        <- eval(quote(
+                get(fn, envir = super::multi_parent_env(parent.frame(level), first_count)) 
+              ))
+              `*ucall*`[[1]] <- as.name("alist") # We form a "dictionary" to restore the
+                # NSE promises from the original call.
+
+              # Keep NSE promises intact.
+              #
+              # For example,
+              #   get("out", envir = super::multi_parent_env(parent.frame(7), 1))(x)
+              # will be turned into
+              #   get("out", envir = super::multi_parent_env(parent.frame(7), 1))(hi)
+              # if we called foo(hi) initially and foo <- function(x) { ... }.
+              `*ocall*` <- eval(bquote(
+                substitute(
+                  .(substitute(`*call*`)), # Inject the call expression
+                  eval(match.call(definition = `*ufn*`, call = `*ucall*`))
+                  # And replace it with the dictionary obtained using match.call 
+                )
+              ))
+
+              # Finally, evaluate the new transformed call.
+              eval(`*ocall*`)
             }
           )))
         }
