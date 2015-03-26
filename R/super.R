@@ -43,11 +43,11 @@ super <- function(...) {
     } else {
       # From the magic get() call below, we extract the function name.
       fn <- fn[2] 
-      env <- original_env <- parent.frame()
+      env <- parent.frame()
       level <- 2 # See comment below.
     }
   } else {
-    env   <- original_env <- parent.frame(2)
+    env   <- parent.frame(2)
     level <- 7
   }
 
@@ -64,7 +64,6 @@ super <- function(...) {
           # n-fold parent environment of the calling environment, parent.frame(),
           # where n = parent_count. Otherwise, non-standard evaluation will not work
           # correctly with super.
-          # browser(identical(attr(env, "name"), "package:package1"))
           return(eval.parent(substitute(
             # The magic number level = 7 comes from the fact eval.parent(...) creates its own
             # call chain with 5 steps inserted that we wish to skip over. Otherwise,
@@ -95,8 +94,11 @@ hop <- function(env) {
     # instead of the parent environment of the package namespace (i.e., the package
     # imports).
     name <- getNamespaceName(env)
-    if (name == "super" || name == "base") { parent.env(env) }
-    else { parent.env(as.environment(paste0("package:", name))) }
+    if (name == "super" || name == "base") {
+      # Traversing through the base or super namespace indicates we are in a
+      # super calling chain that is making its way through package namespaces.
+      parent.env(env)
+    } else { parent.env(as.environment(paste0("package:", name))) }
   } else {
     parent.env(env)
   }
