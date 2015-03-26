@@ -63,15 +63,12 @@ super <- function(...) {
           # where n = parent_count. Otherwise, non-standard evaluation will not work
           # correctly with super.
           return(eval.parent(substitute(
-            get(fn, envir = super::multi_parent_env(parent.frame(5), parent_count))(...)
-          )))
-          return(eval.parent(substitute(
             # The magic number 5 comes from the fact eval.parent(...) creates its own
             # call chain with 4 steps inserted that we wish to skip over.
             {
               `*call*`      <- sys.call(-4)
               `*call*`[[1]] <- quote(
-                get(fn, envir = super::multi_parent_env(parent.frame(3), parent_count)) # parent.frame(), parent_count))
+                get(fn, envir = super::multi_parent_env(parent.frame(7), parent_count)) # parent.frame(), parent_count))
               )
               eval(`*call*`)
             }
