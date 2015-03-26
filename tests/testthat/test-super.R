@@ -159,5 +159,51 @@ test_that("it passes on non-standard evaluation and scope", {
   }, list(1, "val"))
 })
 
+test_that("it passes on non-standard evaluation and scope with tweaks", {
+  expect_equal({
+    out <- function(x) list(x, deparse(substitute(x)))
+    local({
+      out <- function(x) { super::super(x + 1) }
+      val <- 1
+      out(val)
+    })
+  }, list(2, "val + 1"))
+})
 
+test_that("it is smart about translating NSE through name changes", {
+  # TODO: (RK) Is this really the correct behavior? 
+  # options(super.debug=T);on.exit(options(super.debug=F))
+  expect_equal({
+    out <- function(x) list(x, deparse(substitute(x)))
+    local({
+      out <- function(y) { super::super(y) }
+      val <- 1
+      out(y = val)
+    })
+  }, list(1, "val"))
+})
+
+test_that("it is smart about translating NSE through name swaps", {
+  expect_equal({
+    out <- function(x, y) list(x, y, deparse(substitute(x)), deparse(substitute(y)))
+    local({
+      out <- function(y, x) { super::super(x, y) }
+      val <- 1
+      val2 <- 2
+      out(y = val, x = val2)
+    })
+  }, list(2, 1, "val2", "val"))
+})
+
+test_that("it is smart about translating NSE through named name swaps", {
+  expect_equal({
+    out <- function(x, y) list(x, y, deparse(substitute(x)), deparse(substitute(y)))
+    local({
+      out <- function(y, x) { super::super(y = x,  x = y) }
+      val <- 1
+      val2 <- 2
+      out(y = val, x = val2)
+    })
+  }, list(1, 2, "val", "val2"))
+})
 
