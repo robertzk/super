@@ -1,3 +1,7 @@
-foo <- function() {
-  cat("one")
+foo <- function(x) {
+  if (missing(x)) {
+    cat("one")
+  } else {
+    cat(x)
+  }
 }
