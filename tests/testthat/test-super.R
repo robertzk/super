@@ -207,3 +207,13 @@ test_that("it is smart about translating NSE through named name swaps", {
   }, list(1, 2, "val", "val2"))
 })
 
+test_that("it does not allow get calls in super (for now)", {
+  get <- function() { cat("hi") }
+  local({
+    get <- function() { super::super() }
+    local({
+      get <- function() { super::super() }
+      expect_error(get(), "super::super does not")
+    })
+  })
+})
